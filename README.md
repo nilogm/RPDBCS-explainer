@@ -1,5 +1,5 @@
 # RPDBCS-explainer
-Supplementary material for the article "Explaining Vibration Patterns and Classifications in an Oil Industry Software via Virtual Assistant"
+Supplementary material for the article "Explaining Vibration Patterns and Fault Diagnoses in the Oil Industry via Finetuned Chatbot"
 
 
 ## Train Question Templates
@@ -91,3 +91,37 @@ Considering "X" and "Y" two distinct fault types, with only one being correct.
 - "Is this indicative of X or Y?"
 - "This could be either X or Y, what do you think?"
 - "I'm torn between saying this signal has X or Y."
+
+
+## Second chance messages
+- If the response does not return the fault type prediction:
+  - "I'm asking about the signal's fault type!"
+- If the fault type is not a valid class:
+  - "Please, return a valid fault type!"
+- If the predicted class is neither of the ones asked:
+  - "Choose only between the two classes I mentioned!"
+- If the response does not return the behaviour hashmap:
+  - "I'm asking about some of the signal's behaviours!"
+- If the behaviour hashmap contains incorrect keys/values:
+  - "Please, return the JSON with valid signature names and values!"
+- If the response does not contain the required behaviour X:
+  - "I'm asking about X!"
+
+## Prompt used for finetuning
+> You'll be given several percentage values regarding features extracted from a vibration signal in the frequency domain. Your task is to analyze each feature percentage and, according to the following descriptions, determine the expected signal behavior and provide an overall behaviour classification. Later, give each behavior a level of intensity (an integer between the ranges given below for each behaviour) based on the pattern shown by their respective values, and provide your fault type prediction for the signal.\
+> The vibration signals presents two main peaks: one in the first harmonic frequency and another on the second harmonic frequency.\
+> Signals also can present noisiness in lower frequencies, exponential curves and noisiness around the peak at the first harmonic frequency.
+> 
+> Here are the correlations between each feature and the signal behavior: 
+> - low_frequency_noise: 'median(3,5)' represents the noise around 3Hz and 5Hz. Levels: 0 (no noise) up to 3 (high noise).
+> - low_frequency_curve: 'a' and 'b' represent the behavior of the curve between 5Hz and 19Hz. Levels: 0 (no exponential behavior) up to 2 (great exponential behavior).
+> - first_peak: 'peak1x' represents the peak amplitude at the first harmonic. Levels: 0 (no peak) up to 3 (high peak).
+> - noise_at_first_peak: 'rms_angle' and 'rms_magnitude' represent the visibility of the peak amplitude at the first harmonic. Levels: 0 (visible) up to 1 (less visible).
+> - second_peak: 'peak2x' represents the peak amplitude at the second harmonic. Levels: 0 (common) up to 1 (uncommon).
+> 
+> The possible classes are: "normal", "rubbing", "faulty sensor", "misalignment" and "unbalance". Return the most likely fault type if the question regards classification.
+> 
+> Now, return your answer only in the following format: {{"response": \<response\>, "behaviour_values": \<behaviour values\>, "class_prediction": \<class type\>}}, where:
+> - \<response\> is a response to the user,
+> - \<behaviour values\> is a dictionary containing the level of intensity for each behaviour mentioned in your response in the format {\<behaviour name\> : \<behaviour level\>}, if requested, 
+> - \<class type\> is the most likely class between "normal", "rubbing", "faulty sensor", "misalignment" and "unbalance", if requested.
