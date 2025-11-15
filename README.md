@@ -106,6 +106,9 @@ Considering "X" and "Y" two distinct fault types, with only one being correct.
   - "Please, return the JSON with valid signature names and values!"
 - If the response does not contain the required behaviour X:
   - "I'm asking about X!"
+- If the response is not a valid JSON object:
+  - "Please provide a correctly formatted JSON with the expected values!"
+
 
 ## Prompt used for finetuning
 > You'll be given several percentage values regarding features extracted from a vibration signal in the frequency domain. Your task is to analyze each feature percentage and, according to the following descriptions, determine the expected signal behavior and provide an overall behaviour classification. Later, give each behavior a level of intensity (an integer between the ranges given below for each behaviour) based on the pattern shown by their respective values, and provide your fault type prediction for the signal.\
