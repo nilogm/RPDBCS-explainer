@@ -1,5 +1,6 @@
 # RPDBCS-explainer
 Supplementary material for the article "Explaining Vibration Patterns and Fault Diagnoses in the Oil Industry via Finetuned Chatbot"
+The signatures' textual descriptions can be found in the python code in this repository, whereas the question templates and prompts can be seen in this README.
 
 
 ## Train Question Templates
